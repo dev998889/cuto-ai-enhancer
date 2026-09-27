@@ -267,57 +267,46 @@ export default function App() {
               <a href="#faq">FAQ</a>
             </nav>
 
-            {/* Header Right Actions */}
-            <div className="header-actions">
-              {/* Sister Tool Cross-Link */}
+            {/* Header Right Badges & Actions */}
+            <div className="nav-badges-group">
+              <button
+                className="btn-theme-toggle-3d"
+                onClick={toggleTheme}
+                title={`Switch to ${theme === "dark" ? "Light" : "Dark"} theme`}
+                aria-label="Toggle dark/light theme"
+              >
+                <span className="theme-toggle-icon">{theme === "dark" ? "☀️" : "🌙"}</span>
+                <span className="theme-toggle-text">{theme === "dark" ? "Light" : "Dark"}</span>
+              </button>
+
+              <div className="nav-pill-badge badge-free">
+                <span className="badge-dot" />
+                <span>100% Free</span>
+              </div>
+              <div className="nav-pill-badge badge-engine desktop-only" title="4K AI Super-Resolution">
+                <span className="pill-icon">✨</span>
+                <span>4K Engine</span>
+              </div>
               <a
                 href="https://cuto.devv.in"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-github"
-                style={{ borderColor: "#F59E0B", color: "#F59E0B" }}
-                title="Open Cuto BG Remover"
+                className="nav-pill-badge badge-sister desktop-only"
+                title="Switch to Cuto BG Remover"
               >
                 <span>✂️ BG Remover</span>
               </a>
-
-              {/* Theme Toggle Button */}
-              <button
-                className="btn-theme"
-                onClick={toggleTheme}
-                title={theme === "dark" ? "Switch to Cyber Light Mode" : "Switch to Cosmic Dark Mode"}
-              >
-                {theme === "dark" ? (
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2.2">
-                    <circle cx="12" cy="12" r="5" />
-                    <line x1="12" y1="1" x2="12" y2="3" />
-                    <line x1="12" y1="21" x2="12" y2="23" />
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                    <line x1="1" y1="12" x2="3" y2="12" />
-                    <line x1="21" y1="12" x2="23" y2="12" />
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                  </svg>
-                ) : (
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2.2">
-                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-                  </svg>
-                )}
-              </button>
-
-              {/* GitHub Button */}
               <a
                 href="https://github.com/dev998889/cuto-ai-enhancer"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-github desktop-only"
+                className="btn-github-3d desktop-only"
                 title="Star on GitHub"
               >
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                   <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
                 </svg>
-                <span className="btn-github-text">GitHub</span>
+                <span>GitHub</span>
               </a>
             </div>
           </div>
@@ -342,8 +331,8 @@ export default function App() {
             <g className="parallax-waves">
               <use xlinkHref="#nav-gentle-wave-sky" x="48" y="6" fill={theme === "dark" ? "#8B5CF6" : "#6366F1"} />
               <use xlinkHref="#nav-gentle-wave-sky" x="48" y="4" fill={theme === "dark" ? "#6D28D9" : "#06B6D4"} />
-              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="2" fill={theme === "dark" ? "#06B6D4" : "#38BDF8"} />
-              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="0" fill={theme === "dark" ? "#0B0F19" : "#F8FAFC"} />
+              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="2" fill={theme === "dark" ? "#06B6D4" : "#F59E0B"} />
+              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="0" fill={theme === "dark" ? "#1D0515" : "#14171A"} />
             </g>
           </svg>
         </div>
@@ -402,7 +391,7 @@ export default function App() {
             {/* Right Column: High-Visibility Drag & Drop Zone */}
             <div className="hero-right-column">
               <div
-                className={`dropzone ${dragging ? "dragging" : ""}`}
+                className={`upload-zone ${dragging ? "dragging" : ""}`}
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
@@ -719,7 +708,7 @@ export default function App() {
             return (
               <div className="showcase-display-card">
                 <div className="showcase-text-col">
-                  <div className="showcase-badge">{currentCat.badge}</div>
+                  <div className="showcase-category-badge">{currentCat.badge}</div>
                   <h3>{currentCat.title}</h3>
                   <p>{currentCat.desc}</p>
                   <button
@@ -1063,8 +1052,8 @@ export default function App() {
             <g className="parallax-waves">
               <use xlinkHref="#gentle-wave-foot" x="48" y="0" fill={theme === "dark" ? "#8B5CF6" : "#6366F1"} />
               <use xlinkHref="#gentle-wave-foot" x="48" y="3" fill={theme === "dark" ? "#6D28D9" : "#06B6D4"} />
-              <use xlinkHref="#gentle-wave-foot" x="48" y="5" fill={theme === "dark" ? "#06B6D4" : "#38BDF8"} />
-              <use xlinkHref="#gentle-wave-foot" x="48" y="7" fill={theme === "dark" ? "#0B0F19" : "#F8FAFC"} />
+              <use xlinkHref="#gentle-wave-foot" x="48" y="5" fill={theme === "dark" ? "#06B6D4" : "#F59E0B"} />
+              <use xlinkHref="#gentle-wave-foot" x="48" y="7" fill={theme === "dark" ? "#080C14" : "#111827"} />
             </g>
           </svg>
         </div>
