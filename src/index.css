@@ -1,0 +1,74 @@
+:root {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Theme Tokens: Cosmic Cyber Theme */
+  --bg-main: #080C16;
+  --bg-surface: #0F172A;
+  --bg-card: #141E33;
+  --bg-card-hover: #192640;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-bright: rgba(139, 92, 246, 0.35);
+
+  --accent-purple: #8B5CF6;
+  --accent-purple-glow: rgba(139, 92, 246, 0.4);
+  --accent-cyan: #06B6D4;
+  --accent-cyan-glow: rgba(6, 182, 212, 0.4);
+  --accent-gold: #F59E0B;
+  --accent-mint: #10B981;
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  --shadow-glow: 0 12px 40px -10px rgba(139, 92, 246, 0.3);
+  --shadow-card: 0 18px 38px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] {
+  --bg-main: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F1F5F9;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-bright: rgba(139, 92, 246, 0.4);
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+
+  --shadow-glow: 0 12px 30px -10px rgba(139, 92, 246, 0.2);
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
