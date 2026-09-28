@@ -3,57 +3,57 @@ import confetti from "canvas-confetti";
 import { ENHANCE_PRESETS, processImageEnhancement, formatBytes } from "./utils/enhancerEngine";
 import "./App.css";
 
-// ── Showcase Categories (For Interactive Below-Fold Gallery) ──
+// ── Showcase Categories (For Interactive 4K AI Enhancer Showcase) ──
 const SHOWCASE_CATEGORIES = [
   {
-    id: "ecommerce",
-    label: "e-Commerce",
-    title: "Crisp 4K Product Photos that Boost Store Conversions",
-    desc: "Sharpen blurry product listings, shoes, jewelry, and gadgets with sub-pixel edge clarity.",
-    image: "/samples/sample_headphones.png",
-    filename: "sample_headphones.png",
-    bgBackdrop: "#0F172A",
-    badge: "Audio Gear",
+    id: "portrait",
+    label: "Portrait & Face",
+    title: "Restore Facial Clarity, Skin Texture & Crisp Iris in 4K",
+    desc: "Advanced neural super-resolution removes camera blur, sharpens eyelashes and eyebrows, and recovers natural skin micro-texture without plastic artifacts.",
+    enhanced: "/samples/sample_portrait.jpg",
+    original: "/samples/sample_portrait_orig.jpg",
+    filename: "portrait_4k.jpg",
+    badge: "Face Clarity",
   },
   {
-    id: "fashion",
-    label: "Fashion",
-    title: "Restore Fabric Micro-Textures and Sneaker Outlines",
-    desc: "Enhance apparel and footwear textures to 4K resolution for Amazon and Shopify listings.",
-    image: "/samples/sample_sneaker.png",
-    filename: "sample_sneaker.png",
-    bgBackdrop: "#1E1B4B",
-    badge: "Footwear",
+    id: "vintage",
+    label: "Old Photo Fix",
+    title: "Revive Vintage Memories & Family Heirloom Photos in Ultra HD",
+    desc: "Breathe new life into faded, low-resolution black & white and antique portraits with sub-pixel edge reconstruction and contrast de-blurring.",
+    enhanced: "/samples/sample_vintage.jpg",
+    original: "/samples/sample_vintage_orig.jpg",
+    filename: "vintage_restored_4k.jpg",
+    badge: "Old Photo Fix",
   },
   {
-    id: "auto",
-    label: "Auto Listings",
-    title: "Make Vehicle Reflections and Paint Gleam in Ultra HD",
-    desc: "Recover metallic chrome highlights and wheel spoke details on digital car showrooms.",
-    image: "/samples/sample_porsche.png",
-    filename: "sample_porsche.png",
-    bgBackdrop: "#111827",
-    badge: "Supercars",
+    id: "wildlife",
+    label: "Wildlife & Macro",
+    title: "Uncover Microscopic Feathers, Animal Fur & Vibrant Textures",
+    desc: "Enhance wildlife captures and macro shots. Resolves microscopic parrot feathers, whisker follicles, and intricate textures with zero artificial haloing.",
+    enhanced: "/samples/sample_wildlife.jpg",
+    original: "/samples/sample_wildlife_orig.jpg",
+    filename: "wildlife_parrot_4k.jpg",
+    badge: "Macro & Wildlife",
   },
   {
-    id: "animals",
-    label: "Pets & Wildlife",
-    title: "Restore Fine Pet Fur, Whiskers, and Feather Details",
-    desc: "Advanced neural sharpening accentuates animal fur textures without harsh artificial halos.",
-    image: "/samples/sample_dog.png",
-    filename: "sample_dog.png",
-    bgBackdrop: "#1E293B",
-    badge: "Pets & Wildlife",
+    id: "cityscape",
+    label: "Travel & City",
+    title: "Sharpen Travel Architecture, Glowing Lanterns & Distant Skylines",
+    desc: "Restore hazy twilight landscapes, historic canal architecture, and night illumination into crisp 4K desktop wallpapers.",
+    enhanced: "/samples/sample_cityscape.jpg",
+    original: "/samples/sample_cityscape_orig.jpg",
+    filename: "venice_twilight_4k.jpg",
+    badge: "Travel & Architecture",
   },
   {
-    id: "jewellery",
-    label: "Jewellery",
-    title: "Sparkling Gems and Diamond Facets in 4K Super-Resolution",
-    desc: "Eliminate blur artifacts and highlight the microscopic craftsmanship of luxury watches and gems.",
-    image: "/samples/sample_watch.png",
-    filename: "sample_watch.png",
-    bgBackdrop: "#1E1B4B",
-    badge: "Luxury Watches",
+    id: "anime",
+    label: "Anime & Digital Art",
+    title: "Vector-Clean 4K Upscaling for Digital Art & Anime Wallpapers",
+    desc: "Upscale illustrations and digital character renders with razor-sharp vector line art, vibrant glow effects, and zero compression noise.",
+    enhanced: "/samples/sample_anime.jpg",
+    original: "/samples/sample_anime_orig.jpg",
+    filename: "cyber_anime_4k.jpg",
+    badge: "Digital Art 4K",
   },
 ];
 
@@ -74,11 +74,16 @@ export default function App() {
   const [enhancedMeta, setEnhancedMeta] = useState({ width: 0, height: 0, time: 0 });
   const [copyFeedback, setCopyFeedback] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
-  const [activeShowcase, setActiveShowcase] = useState("ecommerce");
+  const [activeShowcaseId, setActiveShowcaseId] = useState("portrait");
+  const [showcaseSliderPos, setShowcaseSliderPos] = useState(50);
+  const [showcaseView, setShowcaseView] = useState("split"); // "split" | "enhanced" | "original"
 
   const fileInputRef = useRef(null);
   const compareRef = useRef(null);
+  const showcaseCompareRef = useRef(null);
   const isDraggingSlider = useRef(false);
+  const isDraggingShowcaseSlider = useRef(false);
+  const dragCounterRef = useRef(0);
 
   // ── Theme State (Defaulting to Dark Theme) ──
   const [theme, setTheme] = useState(() => {
@@ -160,7 +165,58 @@ export default function App() {
     }
   };
 
-  // Drag and Drop handlers
+  // ── Global Full-Screen Drag and Drop (Anywhere on Viewport) ──
+  useEffect(() => {
+    const handleWindowDragEnter = (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.types && Array.from(e.dataTransfer.types).includes("Files")) {
+        dragCounterRef.current++;
+        setDragging(true);
+      }
+    };
+
+    const handleWindowDragOver = (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+    };
+
+    const handleWindowDragLeave = (e) => {
+      e.preventDefault();
+      dragCounterRef.current--;
+      if (dragCounterRef.current <= 0) {
+        dragCounterRef.current = 0;
+        setDragging(false);
+      }
+    };
+
+    const handleWindowDrop = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounterRef.current = 0;
+      setDragging(false);
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith("image/")) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          handleFile(file);
+        }
+      }
+    };
+
+    window.addEventListener("dragenter", handleWindowDragEnter);
+    window.addEventListener("dragover", handleWindowDragOver);
+    window.addEventListener("dragleave", handleWindowDragLeave);
+    window.addEventListener("drop", handleWindowDrop);
+
+    return () => {
+      window.removeEventListener("dragenter", handleWindowDragEnter);
+      window.removeEventListener("dragover", handleWindowDragOver);
+      window.removeEventListener("dragleave", handleWindowDragLeave);
+      window.removeEventListener("drop", handleWindowDrop);
+    };
+  }, []);
+
+  // Upload Zone Specific Drag and Drop handlers
   const onDragOver = (e) => {
     e.preventDefault();
     setDragging(true);
@@ -172,6 +228,35 @@ export default function App() {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
+  };
+
+  // ── Showcase Split Slider Handlers ──
+  const activeShowcase = SHOWCASE_CATEGORIES.find((c) => c.id === activeShowcaseId) || SHOWCASE_CATEGORIES[0];
+
+  const updateShowcaseSlider = (clientX) => {
+    if (!showcaseCompareRef.current) return;
+    const rect = showcaseCompareRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const pos = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setShowcaseSliderPos(pos);
+  };
+
+  const onShowcasePointerDown = (e) => {
+    isDraggingShowcaseSlider.current = true;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    updateShowcaseSlider(e.clientX);
+  };
+
+  const onShowcasePointerMove = (e) => {
+    if (!isDraggingShowcaseSlider.current) return;
+    updateShowcaseSlider(e.clientX);
+  };
+
+  const onShowcasePointerUp = (e) => {
+    isDraggingShowcaseSlider.current = false;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch (_) {}
   };
 
   // Interactive Slider handlers
@@ -368,29 +453,6 @@ export default function App() {
                 <span className="trust-item"><span className="trust-check">✓</span> Zero Watermarks</span>
                 <span className="trust-item"><span className="trust-check">✓</span> 4K UHD Super-Resolution</span>
                 <span className="trust-item"><span className="trust-check">✓</span> 100% Private (Runs locally)</span>
-              </div>
-
-              {/* Sample Bar */}
-              <div className="sample-bar">
-                <span className="sample-label">Or try one of these:</span>
-                <div className="sample-chips">
-                  {[
-                    { name: "Sneaker (D2C)", path: "/samples/sample_sneaker.png" },
-                    { name: "Luxury Watch", path: "/samples/sample_watch.png" },
-                    { name: "Porsche GT", path: "/samples/sample_porsche.png" },
-                    { name: "Golden Retriever", path: "/samples/sample_dog.png" }
-                  ].map((s) => (
-                    <button
-                      key={s.name}
-                      type="button"
-                      className="sample-btn"
-                      onClick={() => loadSample(s.path, s.name + ".png")}
-                    >
-                      <img src={s.path} alt={s.name} />
-                      <span>{s.name}</span>
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
 
@@ -686,7 +748,7 @@ export default function App() {
           </div>
         )}
 
-        {/* ── 1. Interactive 4K Showcase Gallery ── */}
+        {/* ── 1. Interactive 4K Showcase Gallery (with Split Slider) ── */}
         <section className="showcase-section" id="showcase">
           <div className="section-header-tag">
             <span className="tag-dot" />
@@ -694,48 +756,126 @@ export default function App() {
           </div>
           <h2 className="section-title">See the Quality for <span>Every Purpose</span></h2>
           <p className="section-subtitle">
-            From e-commerce products and fashion to pet whiskers and supercars, see how our in-browser AI restores micro-details in 4K.
+            Drag the interactive split slider to see authentic sub-pixel reconstruction and 4K super-resolution across different photo styles.
           </p>
 
           <div className="showcase-tabs">
             {SHOWCASE_CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
-                className={`showcase-tab-btn ${activeShowcase === cat.id ? "active" : ""}`}
-                onClick={() => setActiveShowcase(cat.id)}
+                className={`showcase-tab-btn ${activeShowcaseId === cat.id ? "active" : ""}`}
+                onClick={() => {
+                  setActiveShowcaseId(cat.id);
+                  setShowcaseSliderPos(50);
+                }}
               >
                 {cat.label}
               </button>
             ))}
           </div>
 
-          {(() => {
-            const currentCat = SHOWCASE_CATEGORIES.find((c) => c.id === activeShowcase) || SHOWCASE_CATEGORIES[0];
-            return (
-              <div className="showcase-display-card">
-                <div className="showcase-text-col">
-                  <div className="showcase-category-badge">{currentCat.badge}</div>
-                  <h3>{currentCat.title}</h3>
-                  <p>{currentCat.desc}</p>
-                  <button
-                    className="btn-try-sample"
-                    onClick={() => loadSample(currentCat.image, currentCat.filename)}
-                  >
-                    <span>Try This 4K Sample</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="showcase-visual-col" style={{ backgroundColor: currentCat.bgBackdrop }}>
-                  <img src={currentCat.image} alt={currentCat.title} className="showcase-img" />
-                  <div className="showcase-indicator">4K Super-Resolution</div>
-                </div>
+          <div className="showcase-card">
+            {/* Top Control Bar with Badge & View Toggles */}
+            <div className="showcase-top-controls">
+              <div className="showcase-badge-pill">
+                <span className="badge-sparkle">✨</span>
+                <span>{activeShowcase.badge}</span>
               </div>
-            );
-          })()}
+              <div className="showcase-view-toggle">
+                {[
+                  { id: "split", label: "Split Slider" },
+                  { id: "enhanced", label: "4K Enhanced" },
+                  { id: "original", label: "Original Photo" },
+                ].map((mode) => (
+                  <button
+                    key={mode.id}
+                    className={`showcase-mode-btn ${showcaseView === mode.id ? "active" : ""}`}
+                    onClick={() => setShowcaseView(mode.id)}
+                  >
+                    {mode.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Interactive Slider Area */}
+            <div
+              className="showcase-slider-area"
+              ref={showcaseCompareRef}
+              onPointerDown={onShowcasePointerDown}
+              onPointerMove={onShowcasePointerMove}
+              onPointerUp={onShowcasePointerUp}
+              onPointerCancel={onShowcasePointerUp}
+            >
+              {/* Layer 1 (Base): Original Low-Res Image */}
+              <div className="showcase-layer showcase-orig-layer">
+                <img
+                  src={activeShowcase.original}
+                  alt={`${activeShowcase.label} Original`}
+                  draggable={false}
+                />
+              </div>
+
+              {/* Layer 2: 4K Enhanced Image (Clipped dynamically based on slider position) */}
+              <div
+                className="showcase-layer showcase-enhanced-layer"
+                style={{
+                  clipPath: showcaseView === "original"
+                    ? "inset(0 0 0 100%)"
+                    : showcaseView === "enhanced"
+                    ? "inset(0 0 0 0)"
+                    : `inset(0 0 0 ${showcaseSliderPos}%)`
+                }}
+              >
+                <img
+                  src={activeShowcase.enhanced}
+                  alt={`${activeShowcase.label} 4K Enhanced`}
+                  draggable={false}
+                />
+              </div>
+
+              {/* Divider Line & Interactive Handle (When in split mode) */}
+              {showcaseView === "split" && (
+                <div className="showcase-divider" style={{ left: `${showcaseSliderPos}%` }}>
+                  <div className="showcase-handle">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="15 18 9 12 15 6" />
+                      <polyline points="9 18 3 12 9 6" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: "rotate(180deg)" }}>
+                      <polyline points="15 18 9 12 15 6" />
+                      <polyline points="9 18 3 12 9 6" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+
+              {/* Floating Badges */}
+              <div className="showcase-badge badge-orig">Original (Low-Res)</div>
+              <div className="showcase-badge badge-enhanced">✨ 4K AI Enhanced</div>
+            </div>
+
+            {/* Bottom Caption Bar */}
+            <div className="showcase-caption">
+              <div className="showcase-text">
+                <h3>{activeShowcase.title}</h3>
+                <p>{activeShowcase.desc}</p>
+              </div>
+              <button
+                className="btn-try-sample"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  loadSample(activeShowcase.enhanced, activeShowcase.filename);
+                }}
+              >
+                <span>Try This 4K Sample</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </section>
 
         {/* ── 2. How It Works (3 Steps) ── */}
@@ -1117,6 +1257,50 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* ── Global Full-Screen Drag & Drop Overlay ── */}
+      {dragging && (
+        <div
+          className="global-drag-overlay"
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.dataTransfer.dropEffect = "copy";
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            if (e.target === e.currentTarget) {
+              dragCounterRef.current = 0;
+              setDragging(false);
+            }
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dragCounterRef.current = 0;
+            setDragging(false);
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+              const file = e.dataTransfer.files[0];
+              if (file && file.type.startsWith("image/")) {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                handleFile(file);
+              }
+            }
+          }}
+        >
+          <div className="global-drag-modal">
+            <div className="drag-pulse-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <h2>Drop Your Photo Anywhere!</h2>
+            <p>Release your photo anywhere on this screen to enhance to 4K UHD instantly.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
