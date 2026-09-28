@@ -338,7 +338,7 @@ export default function App() {
               <use xlinkHref="#nav-gentle-wave-sky" x="48" y="6" fill="#46641E" />
               <use xlinkHref="#nav-gentle-wave-sky" x="48" y="4" fill="#6A5723" />
               <use xlinkHref="#nav-gentle-wave-sky" x="48" y="2" fill="#DFC68E" />
-              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="0" fill={theme === "dark" ? "#1A2813" : "#14171A"} />
+              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="0" fill={theme === "dark" ? "#131E0E" : "#1A2813"} />
             </g>
           </svg>
         </div>
@@ -1056,10 +1056,10 @@ export default function App() {
               />
             </defs>
             <g className="parallax-waves">
-              <use xlinkHref="#gentle-wave-foot" x="48" y="0" fill={theme === "dark" ? "#8B5CF6" : "#6366F1"} />
-              <use xlinkHref="#gentle-wave-foot" x="48" y="3" fill={theme === "dark" ? "#6D28D9" : "#06B6D4"} />
-              <use xlinkHref="#gentle-wave-foot" x="48" y="5" fill={theme === "dark" ? "#06B6D4" : "#F59E0B"} />
-              <use xlinkHref="#gentle-wave-foot" x="48" y="7" fill={theme === "dark" ? "#080C14" : "#111827"} />
+              <use xlinkHref="#gentle-wave-foot" x="48" y="0" fill="#46641E" />
+              <use xlinkHref="#gentle-wave-foot" x="48" y="3" fill="#6A5723" />
+              <use xlinkHref="#gentle-wave-foot" x="48" y="5" fill="#DFC68E" />
+              <use xlinkHref="#gentle-wave-foot" x="48" y="7" fill={theme === "dark" ? "#131E0E" : "#1A2813"} />
             </g>
           </svg>
         </div>
@@ -1068,7 +1068,7 @@ export default function App() {
           <div className="footer-grid">
             <div className="footer-brand-col">
               <div className="footer-logo">
-                <span className="footer-logo-title">Cuto <span style={{ color: "#06B6D4" }}>4K</span></span>
+                <span className="footer-logo-title">Cuto <span style={{ color: "#DFC68E" }}>4K</span></span>
               </div>
               <p className="footer-tagline">
                 The #1 free, in-browser AI super-resolution and photo enhancement engine. 100% private, zero watermarks, and unlimited full 4K exports.
