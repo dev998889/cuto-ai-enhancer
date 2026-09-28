@@ -89,6 +89,12 @@ export default function App() {
     document.title = "Cuto AI Enhancer — 100% Free AI Image Enhancer & 4K Upscaler";
   }, []);
 
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    document.body.setAttribute("data-theme", theme);
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
+
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
