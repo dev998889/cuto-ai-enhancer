@@ -79,18 +79,98 @@ export const ENHANCE_PRESETS = {
   }
 };
 
+export const VPS_ENHANCE_ENDPOINT = "https://setup-asbestos-hospitality-essentially.trycloudflare.com/api/enhance";
+
 /**
- * Core In-Browser Enhancement Pipeline
+ * Enhanced via VPS 2 Real-ESRGAN Neural Engine
+ */
+async function enhanceViaVPS(sourceImg, scaleFactor, presetKey, onProgress) {
+  const tempCanvas = document.createElement("canvas");
+  const origW = sourceImg.naturalWidth || sourceImg.width;
+  const origH = sourceImg.naturalHeight || sourceImg.height;
+  tempCanvas.width = origW;
+  tempCanvas.height = origH;
+  const tempCtx = tempCanvas.getContext("2d");
+  tempCtx.drawImage(sourceImg, 0, 0);
+
+  const blob = await new Promise((resolve) => tempCanvas.toBlob(resolve, "image/jpeg", 0.95));
+  if (!blob) throw new Error("Could not serialize source image");
+
+  const formData = new FormData();
+  formData.append("file", blob, "photo.jpg");
+  formData.append("scale", String(scaleFactor));
+  formData.append("preset", presetKey);
+
+  onProgress(25);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 24000); // 24s safety timeout
+
+  const response = await fetch(VPS_ENHANCE_ENDPOINT, {
+    method: "POST",
+    body: formData,
+    signal: controller.signal,
+  });
+
+  clearTimeout(timeoutId);
+
+  if (!response.ok) {
+    throw new Error(`VPS returned HTTP ${response.status}`);
+  }
+
+  onProgress(75);
+
+  const outputBlob = await response.blob();
+  const outputImg = new Image();
+  const objectUrl = URL.createObjectURL(outputBlob);
+
+  await new Promise((resolve, reject) => {
+    outputImg.onload = resolve;
+    outputImg.onerror = reject;
+    outputImg.src = objectUrl;
+  });
+
+  const finalCanvas = document.createElement("canvas");
+  finalCanvas.width = outputImg.naturalWidth || outputImg.width;
+  finalCanvas.height = outputImg.naturalHeight || outputImg.height;
+  const finalCtx = finalCanvas.getContext("2d");
+  finalCtx.drawImage(outputImg, 0, 0);
+  URL.revokeObjectURL(objectUrl);
+
+  onProgress(100);
+
+  return {
+    canvas: finalCanvas,
+    width: finalCanvas.width,
+    height: finalCanvas.height,
+    isRealAI: true,
+  };
+}
+
+/**
+ * Core Hybrid Enhancement Pipeline (VPS 2 Real-ESRGAN + Local In-Browser Fallback)
  * @param {HTMLImageElement|ImageBitmap} sourceImg 
  * @param {number} scaleFactor 2, 4, or 8
  * @param {string} presetKey Preset ID
  * @param {function} onProgress Progress callback (0-100)
- * @returns {Promise<{ canvas: HTMLCanvasElement, width: number, height: number, processingTime: number }>}
+ * @returns {Promise<{ canvas: HTMLCanvasElement, width: number, height: number, processingTime: number, isRealAI?: boolean }>}
  */
 export async function processImageEnhancement(sourceImg, scaleFactor = 4, presetKey = "ultra4k", onProgress = () => {}) {
   const startTime = performance.now();
   onProgress(10);
 
+  // 1. Try VPS 2 Real-ESRGAN Neural Engine First (Authentic 4K Remini Quality)
+  try {
+    const vpsRes = await enhanceViaVPS(sourceImg, scaleFactor, presetKey, onProgress);
+    return {
+      ...vpsRes,
+      processingTime: Math.round(performance.now() - startTime),
+    };
+  } catch (vpsErr) {
+    console.warn("VPS 2 Neural Engine unavailable/busy, using high-speed local engine fallback:", vpsErr);
+  }
+
+  // 2. Fallback: Multi-Scale Step-Wise In-Browser Engine
   const preset = ENHANCE_PRESETS[presetKey] || ENHANCE_PRESETS.ultra4k;
   const originalWidth = sourceImg.naturalWidth || sourceImg.width;
   const originalHeight = sourceImg.naturalHeight || sourceImg.height;
@@ -107,7 +187,7 @@ export async function processImageEnhancement(sourceImg, scaleFactor = 4, preset
   }
 
   // Stage 1: High-Order Step-Wise Super-Sampling
-  onProgress(25);
+  onProgress(35);
   const upscaledCanvas = document.createElement("canvas");
   upscaledCanvas.width = targetWidth;
   upscaledCanvas.height = targetHeight;
