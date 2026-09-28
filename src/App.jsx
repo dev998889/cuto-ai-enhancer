@@ -259,7 +259,7 @@ export default function App() {
               </div>
               <div className="logo-text">
                 <span className="logo-title">
-                  Cuto <span className="logo-highlight" style={{ color: "#06B6D4" }}>4K</span>
+                  Cuto <span className="logo-highlight" style={{ color: "#DFC68E" }}>4K</span>
                 </span>
                 <span className="logo-sub">AI IMAGE ENHANCER</span>
               </div>
@@ -335,10 +335,10 @@ export default function App() {
               />
             </defs>
             <g className="parallax-waves">
-              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="6" fill={theme === "dark" ? "#8B5CF6" : "#6366F1"} />
-              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="4" fill={theme === "dark" ? "#6D28D9" : "#06B6D4"} />
-              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="2" fill={theme === "dark" ? "#06B6D4" : "#F59E0B"} />
-              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="0" fill={theme === "dark" ? "#1D0515" : "#14171A"} />
+              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="6" fill="#46641E" />
+              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="4" fill="#6A5723" />
+              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="2" fill="#DFC68E" />
+              <use xlinkHref="#nav-gentle-wave-sky" x="48" y="0" fill={theme === "dark" ? "#1A2813" : "#14171A"} />
             </g>
           </svg>
         </div>
